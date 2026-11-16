@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0284C7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Br Personal Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F4F8FB;
+      --surface: #FFFFFF;
+      --primary: #0284C7;
+      --primary-light: #E0F2FE;
+      --secondary: #38BDF8;
+      --text-main: #0F172A;
+      --text-sub: #64748B;
+      --border: #E2E8F0;
+      --danger: #E11D48;
+      --success: #16A34A;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Prompt', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding-bottom: 85px;
+      max-width: 600px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .app-header {
+      padding: 20px 18px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: rgba(244, 248, 251, 0.92);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+    .app-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .back-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Banner */
+    .banner {
+      margin: 4px 16px 16px;
+      padding: 18px;
+      background: linear-gradient(135deg, #0284C7, #38BDF8);
+      border-radius: 20px;
+      color: white;
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.2);
+    }
+    .banner h2 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .banner p { font-size: 12px; opacity: 0.9; }
+
+    /* Cards & Lists */
+    .container { padding: 0 16px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+      transition: transform 0.1s;
+    }
+    .card-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .time-badge {
+      background: #F0F9FF;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .tag-pill {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    .card-title { font-weight: 600; font-size: 15px; color: var(--text-main); }
+    .card-sub { font-size: 12px; color: var(--text-sub); margin-top: 3px; }
+
+    .icon-actions { display: flex; gap: 4px; }
+    .icon-btn {
+      background: none;
+      border: none;
+      padding: 6px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .icon-btn.edit { color: var(--primary); }
+    .icon-btn.del { color: var(--danger); }
+
+    /* Anatomy Box */
+    .anatomy-box {
+      margin-top: 10px;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+    .anatomy-phase { text-align: center; flex: 1; }
+    .anatomy-phase span {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .divider-v { width: 1px; height: 90px; background: var(--border); }
+
+    /* Buttons */
+    .btn-video {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .fab {
+      position: fixed;
+      bottom: 85px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    /* Recipe Card */
+    .recipe-card {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .recipe-img {
+      width: 105px;
+      height: 105px;
+      object-fit: cover;
+      background: #FEF3C7;
+      flex-shrink: 0;
+    }
+    .recipe-info { padding: 10px 12px; flex: 1; }
+
+    /* Finance Summary */
+    .finance-box {
+      margin: 4px 16px 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #0284C7, #0369A1);
+      border-radius: 20px;
+      color: white;
+      text-align: center;
+    }
+    .finance-balance { font-size: 36px; font-weight: 700; margin: 4px 0 14px; }
+    .finance-stats {
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+      z-index: 30;
+    }
+    .nav-item {
+      background: none;
+      border: none;
+      color: #94A3B8;
+      font-size: 11px;
+      font-weight: 500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      flex: 1;
+    }
+    .nav-item.active { color: var(--primary); font-weight: 700; }
+    .nav-icon { font-size: 20px; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      width: 100%;
+      max-width: 440px;
+      border-radius: 20px;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal h3 { font-size: 18px; margin-bottom: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 4px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+    }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+    .btn-cancel { background: #F1F5F9; border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--text-sub); }
+    .btn-save { background: var(--primary); border: none; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-weight: 600; color: white; }
+
+    .strike { text-decoration: line-through; color: var(--text-sub); }
+
+    /* กล่องซูมตัดเฉพาะท่าที่เล่น */
+    .video-crop-viewport {
+      width: 240px;
+      height: 310px;
+      margin: 0 auto 12px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #0F172A;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .video-crop-viewport video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .crop-tl { transform: scale(2.05); transform-origin: 0% 8%; }
+    .crop-tr { transform: scale(2.05); transform-origin: 100% 8%; }
+    .crop-bl { transform: scale(2.05); transform-origin: 0% 94%; }
+    .crop-br { transform: scale(2.05); transform-origin: 100% 94%; }
+    .crop-full { transform: scale(1); }
+    /* ซ่อนป้าย Powered by Netlify และดันปุ่มขึ้นไม่ให้โดนบัง */
+    iframe[src*="netlify"],
+    div[id*="netlify"],
+    a[href*="netlify.com"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.fab {
+  bottom: 95px !important;
+}
+  </style>
+</head>
+<body>
+
+  <div id="app"></div>
+
+  <!-- Modal Container -->
+  <div id="modalBackdrop" class="modal-backdrop">
+    <div id="modalContent" class="modal"></div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('schedule', this)">
+      <span class="nav-icon">☀️</span>
+      <span>ตารางชีวิต</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('workout', this)">
+      <span class="nav-icon">💪</span>
+      <span>ออกกำลังกาย</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('recipe', this)">
+      <span class="nav-icon">🥗</span>
+      <span>เมนูคลีน</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('finance', this)">
+      <span class="nav-icon">💰</span>
+      <span>การเงิน</span>
+    </button>
+  </nav>
+
+  <script>
+    // ==========================================
+    // ข้อมูลเริ่มต้น (ซูมตัดเฉพาะท่า + ล้างรายการเงินให้ว่างเปล่า)
+    // ==========================================
+    const defaultData = {
+      schedule: [
+        { time: '10:30', title: 'ตื่นนอน จิบน้ำเปล่าชิลๆ', sub: 'ยังไม่หิวก็ไม่ต้องฝืนกิน ปล่อยร่างกายค่อยๆ ตื่น', tag: 'เริ่มต้นวัน' },
+        { time: '13:00', title: 'จัดมื้อแรกของวัน', sub: 'เน้นกับข้าวโปรตีนดีๆ ข้าวพออิ่ม เลี่ยงของทอดมัน', tag: 'มื้ออาหาร' },
+        { time: '14:00', title: 'เรียน CS / เคลียร์งานทั่วไป', sub: 'เข้าเรียนหรือนั่งเช็กงานเบาๆ ช่วงบ่าย', tag: 'การเรียน' },
+        { time: '17:30', title: 'ได้เวลายืดเส้นยืดสาย', sub: 'หยิบดัมเบลมาเวทสักแป๊บ ต่อด้วยเดินหรือวิ่งเบาๆ', tag: 'ออกกำลัง' },
+        { time: '18:45', title: 'นั่งพักให้หายเหนื่อย & อาบน้ำ', sub: 'ตากพัดลมให้เหงื่อแห้งก่อนค่อยไปอาบน้ำให้สดชื่น', tag: 'พักผ่อน' },
+        { time: '19:30', title: 'เติมโปรตีนมื้อเย็น', sub: 'กินซ่อมกล้ามเนื้อ ลดแป้งลงนิดหน่อย จะได้ไม่อึดอัด', tag: 'มื้ออาหาร' },
+        { time: '20:30', title: 'ลุยทำเกม & เขียนโค้ด', sub: 'ปั่นงานช่วงดึกยาวๆ หิวก็หาขนมคลีนหรือน้ำ Zero กิน', tag: 'ทำโปรเจกต์' },
+        { time: '02:00', title: 'อาบน้ำอุ่น เตรียมพักผ่อน', sub: 'ปิดคอม วางมือถือ พักสายตาให้หลับสนิท', tag: 'เข้านอน' }
+      ],
+      programs: [
+        {
+          title: 'ตารางเวทดัมเบล 4 วัน (@fitkapbon)',
+          desc: 'โปรแกรมเล่นดัมเบลที่หอ 4 วัน/สัปดาห์ (ซูมตัดคลิปเฉพาะท่าที่เล่นให้อัตโนมัติ)',
+          days: [
+            {
+              dayTitle: 'วันจันทร์',
+              focusArea: 'หน้าอก - หลังแขน',
+              exercises: [
+                { name: 'Chest Press', target: 'กล้ามเนื้ออกกลาง & หัวไหล่หน้า', pose: 'bench_press', videoSrc: 'workout_guide.mp4', startTime: 0, endTime: 3.9, crop: 'tl', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: 'นอนราบ กางศอกทำมุมประมาณ 45 องศากับลำตัว ดันดัมเบลขึ้นตรงๆ แล้วบีบกล้ามเนื้ออก', done: false },
+                { name: 'Hex Press', target: 'ร่องอกด้านใน & หลังแขน', pose: 'hex_press', videoSrc: 'workout_guide.mp4', startTime: 0, endTime: 3.9, crop: 'tr', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: 'นำดัมเบลสองข้างมาประกบชิดกันตลอดเวลา ออกแรงบีบเข้าหากันขณะดันขึ้นลง', done: false },
+                { name: 'Chest Fly', target: 'อกด้านนอก (ขยายทรงอก)', pose: 'fly', videoSrc: 'workout_guide.mp4', startTime: 0, endTime: 3.9, crop: 'bl', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: 'งอศอกค้างไว้เล็กน้อยเหมือนกำลังกอดต้นไม้ใหญ่ กางแขนออกจนตึงอกแล้วหุบกลับ', done: false },
+                { name: 'Tricep Extension', target: 'หลังแขน (ท้องแขนกระชับ)', pose: 'tricep_ext', videoSrc: 'workout_guide.mp4', startTime: 0, endTime: 3.9, crop: 'br', sets: '8-12 ครั้ง 4 เซ็ต', weight: '6 kg', tip: 'ยืนหรือนั่งหลังตรง ล็อกต้นแขนชิดใบหู พับศอกลงด้านหลังศีรษะแล้วเหยียดขึ้นสุด', done: false }
+              ]
+            },
+            {
+              dayTitle: 'วันอังคาร',
+              focusArea: 'หลัง - หน้าแขน',
+              exercises: [
+                { name: 'Dumbbell Row', target: 'แผ่นหลังส่วนกลาง & ปีกหลัง', pose: 'row', videoSrc: 'workout_guide.mp4', startTime: 4.1, endTime: 7.9, crop: 'tl', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: 'พับสะโพกโน้มตัวไปข้างหน้า หลังตรงไม่งอ ดึงดัมเบลสองข้างขึ้นพร้อมบีบสะบัก', done: false },
+                { name: 'Reverse Row', target: 'หลังส่วนบน & หัวไหล่หลัง', pose: 'row', videoSrc: 'workout_guide.mp4', startTime: 4.1, endTime: 7.9, crop: 'tr', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: 'โน้มตัวเหมือนท่า Row แต่หงายฝ่ามือออกด้านหน้า ดึงศอกขึ้นข้างลำตัวเน้นหลังบน', done: false },
+                { name: 'Hammer Curl', target: 'หน้าแขนด้านข้าง & ท่อนแขน', pose: 'bicep_curl', videoSrc: 'workout_guide.mp4', startTime: 4.1, endTime: 7.9, crop: 'bl', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: 'ยืนตรง จับดัมเบลแนวตั้งเหมือนถือค้อน ล็อกศอกไว้ข้างตัวแล้วพับแขนยกขึ้น', done: false },
+                { name: 'One Arm Row', target: 'ปีกหลัง (สร้างทรง V-Shape)', pose: 'row', videoSrc: 'workout_guide.mp4', startTime: 4.1, endTime: 7.9, crop: 'br', sets: '8-12 ครั้ง 4 เซ็ต', weight: '6 kg', tip: 'ก้าวขาข้างหนึ่งไปด้านหน้า มือยันเข่าไว้ หลังตรง ดึงดัมเบลอีกข้างเข้าหาเอว', done: false }
+              ]
+            },
+            {
+              dayTitle: 'วันพฤหัส',
+              focusArea: 'พัฒนาหัวไหล่',
+              exercises: [
+                { name: 'Shoulder Press', target: 'หัวไหล่ด้านหน้า & ด้านข้าง', pose: 'shoulder_press', videoSrc: 'workout_guide.mp4', startTime: 8.1, endTime: 11.9, crop: 'tl', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: 'ยืนหรือนั่งหลังตรง ดันดัมเบลขึ้นเหนือศีรษะ ผ่อนลงช้าๆ ให้อยู่ระดับใบหู', done: false },
+                { name: 'Front Raise', target: 'หัวไหล่ด้านหน้า', pose: 'shoulder_press', videoSrc: 'workout_guide.mp4', startTime: 8.1, endTime: 11.9, crop: 'tr', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 lbs', tip: 'ยกดัมเบลขึ้นไปด้านหน้าตรงๆ สูงระดับสายตา คุมจังหวะผ่อนลงช้าๆ ไม่เหวี่ยงตัว', done: false },
+                { name: 'Lateral Raise', target: 'หัวไหล่ด้านข้าง (ทำให้ไหล่กว้าง)', pose: 'lateral_raise', videoSrc: 'workout_guide.mp4', startTime: 8.1, endTime: 11.9, crop: 'bl', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 lbs', tip: 'กางแขนออกด้านข้างสูงระดับหัวไหล่ คว่ำนิ้วก้อยขึ้นเล็กน้อยเหมือนเทน้ำ', done: false },
+                { name: 'Rear Delt Fly', target: 'หัวไหล่ด้านหลัง & สะบัก', pose: 'lateral_raise', videoSrc: 'workout_guide.mp4', startTime: 8.1, endTime: 11.9, crop: 'br', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 lbs', tip: 'พับตัวก้มลงเกือบขนานพื้น กางแขนออกด้านข้างโดยโฟกัสที่กล้ามเนื้อหัวไหล่ด้านหลัง', done: false }
+              ]
+            },
+            {
+              dayTitle: 'วันศุกร์',
+              focusArea: 'พัฒนา ขาและสะโพก',
+              exercises: [
+                { name: 'Squat', target: 'ต้นขาด้านหน้า & ก้น', pose: 'squat', videoSrc: 'workout_guide.mp4', startTime: 12.1, endTime: 15.8, crop: 'tl', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: 'ยืนกางขากว้างระดับหัวไหล่ ถือดัมเบลชิดอก ย่อก้นลงไปด้านหลังเหมือนนั่งเก้าอี้', done: false },
+                { name: 'Sumo Squat', target: 'ต้นขาด้านใน & สะโพก', pose: 'squat', videoSrc: 'workout_guide.mp4', startTime: 12.1, endTime: 15.8, crop: 'tr', sets: '8-12 ครั้ง 4 เซ็ต', weight: '6 kg', tip: 'ยืนกางขากว้างกว่าหัวไหล่ ปลายเท้าชี้ออก 45 องศา ย่อตัวลงตรงๆ หลังตั้งตรง', done: false },
+                { name: 'Deadlift', target: 'ต้นขาด้านหลัง (Hamstrings) & หลังล่าง', pose: 'row', videoSrc: 'workout_guide.mp4', startTime: 12.1, endTime: 15.8, crop: 'bl', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: 'งอเข่าเล็กน้อย พับสะโพกไปด้านหลัง รูดดัมเบลลงหน้าแข้งโดยรักษาแผ่นหลังให้ตรงตลอด', done: false },
+                { name: 'Leg Lunges', target: 'ต้นขาด้านหน้า & ก้นทีละข้าง', pose: 'squat', videoSrc: 'workout_guide.mp4', startTime: 12.1, endTime: 15.8, crop: 'br', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: 'ก้าวขาไปข้างหน้าแล้วย่อตัวลงให้เข่าทำมุม 90 องศาทั้งสองข้าง ดันตัวกลับท่าเริ่มต้น', done: false }
+              ]
+            }
+          ]
+        }
+      ],
+      recipes: [
+        {
+          name: 'กะเพราอกไก่สับรวนน้ำ (ไม่รวมข้าว)',
+          cal: '245 kcal',
+          pro: 'โปรตีน 45g',
+          tag: 'ไม่ใช้น้ำมัน',
+          img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnAV-jBzkmz9Oj7biqJcEXPFJmN3JJe8olOD_eN1ciiKbmZxaVS2-byyZv&s=10',
+          ing: ['อกไก่ลอกหนังบด 200 กรัม (โปรตีน ~45g)', 'พริกขี้หนู + กระเทียมสับ', 'ใบกะเพรา 1 กำมือ', 'ซอสหอยนางรม 1 ช้อนโต๊ะ + ซีอิ๊วขาว 1 ช้อนชา', 'น้ำเปล่า 4 ช้อนโต๊ะ (ใช้แทนน้ำมัน)'],
+          steps: ['1. ตั้งกระทะเปิดไฟกลาง เทน้ำเปล่าลงไป 3-4 ช้อนโต๊ะรอจนเดือด', '2. ใส่พริกกับกระเทียมลงไปคั่วในน้ำจนกลิ่นหอมฟุ้ง', '3. ใส่อกไก่สับลงไปยีให้กระจาย รวนจนเนื้อไก่สุกขาวทั้งหมด', '4. ปรุงรสด้วยซอสหอยนางรมและซีอิ๊วขาว ผัดคลุกเคล้าให้เข้าเนื้อ', '5. ปิดไฟแล้วโยนใบกะเพราลงไปคลุกกับความร้อนที่เหลือ ตักราดข้าวสวย 1.5 ทัพพี (ข้าวเพิ่มอีก ~180 kcal)']
+        },
+        {
+          name: 'ไข่ตุ๋นทรงเครื่องไมโครเวฟ',
+          cal: '230 kcal',
+          pro: 'โปรตีน 27g',
+          tag: 'ทำใน 5 นาที',
+          img: 'https://www.hiqfood.com/wp-content/uploads/2024/01/SSP_1271-scaled.jpg',
+          ing: ['ไข่ไก่ 3 ฟอง เอาไข่แดงออก 1 ฟอง (โปรตีน ~16g)', 'อกไก่ต้มฉีกสำหรับโรยหน้า 50 กรัม (โปรตีน ~11g)', 'น้ำเปล่า 150 ml', 'ซีอิ๊วขาว 1.5 ช้อนชา'],
+          steps: ['1. ตอกไข่ใส่ชามกระเบื้องที่เข้าไมโครเวฟได้ ตีเบาๆ ไม่ให้เกิดฟองเยอะ', '2. เติมน้ำเปล่าและซีอิ๊วขาว คนให้เข้ากันดี', '3. นำเข้าไมโครเวฟ ปรับไฟกลาง (400-500W) ตั้งเวลา 3 นาที', '4. นำออกมาเช็กความสุก ถ้าตรงกลางยังเป็นน้ำให้เวฟต่อทีละ 45 วินาที', '5. โรยหน้าด้วยอกไก่ฉีกและพริกไทยป่น กินคู่ข้าวสวยร้อนๆ']
+        },
+        {
+          name: 'สุกี้น้ำอกไก่ไข่นุ่ม',
+          cal: '360 kcal',
+          pro: 'โปรตีน 46g',
+          tag: 'อิ่มท้องนาน',
+          img: 'https://www.ajinomoto.co.th/storage/photos/shares/Recipe/May/Suki/6284bfb1d0a0c.jpg',
+          ing: ['อกไก่หั่นชิ้น 180 กรัม (โปรตีน ~40g)', 'ไข่ไก่ 1 ฟอง (โปรตีน ~6g)', 'ผักกาดขาว ผักบุ้ง คื่นช่าย', 'วุ้นเส้นแช่น้ำ 1 หยิบมือเล็ก (~60 kcal)', 'น้ำจิ้มสุกี้ 1.5 ช้อนโต๊ะ (~35 kcal)'],
+          steps: ['1. ต้มน้ำเปล่า 1 ถ้วยในหม้อจนเดือดจัด (ไม่ต้องใส่ซุปก้อน)', '2. ใส่อกไก่ลงไปต้มจนสุก ตามด้วยผักกาดขาวและผักบุ้ง', '3. ใส่วุ้นเส้นลงไป ตอกไข่ใส่แล้วคนเร็วๆ ให้ไข่แตกตัวเป็นสายนุ่มๆ', '4. ปิดไฟ ตักใส่ชาม ราดน้ำจิ้มสุกี้ 1.5 ช้อนโต๊ะ (เน้นกินเนื้อและผัก ลดซดน้ำซุป)']
+        },
+        {
+          name: 'อกไก่นุ่มย่างพริกไทยดำ',
+          cal: '235 kcal',
+          pro: 'โปรตีน 45g',
+          tag: 'โปรตีนล้วน',
+          img: 'https://i.ytimg.com/vi/zlVyUz0WzAE/maxresdefault.jpg',
+          ing: ['อกไก่ลอกหนัง 200 กรัม (โปรตีน ~45g)', 'พริกไทยดำป่น 1 ช้อนชา', 'ซีอิ๊วขาว 1 ช้อนโต๊ะ + น้ำมันหอย 1 ช้อนชา', 'กระเทียมสับละเอียด 3 กลีบ'],
+          steps: ['1. ใช้ส้อมจิ้มเนื้ออกไก่ให้ทั่วเพื่อให้เครื่องปรุงซึมเข้าเนื้อ', '2. คลุกอกไก่กับซีอิ๊วขาว น้ำมันหอย กระเทียม และพริกไทยดำ หมักทิ้งไว้ 15 นาที', '3. ตั้งกระทะเทฟลอนไฟอ่อน-กลาง (ไม่ต้องใส่น้ำมัน) นำไก่ลงไปย่าง', '4. ปิดฝากระทะไว้ด้านละ 4-5 นาทีเพื่อให้ไอน้ำช่วยให้เนื้อไก่นุ่มไม่แห้งแข็ง', '5. หั่นเป็นชิ้นพอดีคำ กินคู่กับข้าวสวยและแตงกวาแช่เย็น']
+        },
+        {
+          name: 'ยำทูน่าในน้ำแร่สมุนไพร',
+          cal: '140 kcal',
+          pro: 'โปรตีน 25g',
+          tag: 'ไม่ต้องใช้เตา',
+          img: 'https://aroifin.com/wp-content/uploads/2025/05/05052025-tuna-spicy-salad01.webp',
+          ing: ['ทูน่ากระป๋องในน้ำแร่ 1 กระป๋อง เนื้อล้วน ~115g (โปรตีน ~25g)', 'หอมแดงซอย ตะไคร้ซอย พริกขี้หนูซอย', 'น้ำมะนาวสด 2 ช้อนโต๊ะ + น้ำปลา 1 ช้อนโต๊ะ', 'ผักกาดหอมหรือแตงกวาสำหรับกินแกล้ม'],
+          steps: ['1. เปิดกระป๋องทูน่า เทน้ำแร่ออกให้หมดแล้วยีเนื้อทูน่าใส่ชามผสม', '2. ปรุงน้ำยำด้วยน้ำมะนาว น้ำปลา และพริกขี้หนู คนให้เข้ากัน', '3. ใส่หอมแดงซอยและตะไคร้ซอยลงไปคลุกเคล้าให้เข้ากับเนื้อทูน่า', '4. ตักใส่จาน กินคู่กับข้าวสวยร้อนๆ หรือผักสด ได้โปรตีนเน้นๆ ไร้ไขมัน']
+        },
+        {
+          name: 'ต้มจืดเต้าหู้ไข่หมูสับไม่มัน',
+          cal: '320 kcal',
+          pro: 'โปรตีน 34g',
+          tag: 'ซดคล่องคอ',
+          img: 'https://www.maggi.co.th/sites/default/files/styles/srh_recipes/public/srh_recipes/55c8c88861cfb8deddc8b6e3083e2b40.jpg?h=4f5b30f1&itok=i96JIWoV',
+          ing: ['หมูสับไม่ติดมัน 150 กรัม (โปรตีน ~28g)', 'เต้าหู้ไข่ 1 หลอด (โปรตีน ~6g)', 'ผักกาดขาวและแครอทหั่นชิ้น', 'ซีอิ๊วขาว 1.5 ช้อนโต๊ะ + พริกไทยป่น', 'น้ำเปล่า 2 ถ้วย'],
+          steps: ['1. หมักหมูสับกับซีอิ๊วขาวนิดหน่อยและพริกไทยป่น ปั้นเป็นก้อนพอดีคำ', '2. ต้มน้ำเปล่าให้เดือด ใส่แครอทลงไปต้มก่อน 2 นาที', '3. ค่อยๆ หย่อนหมูสับปั้นก้อนลงไป รอจนหมูลอยขึ้นมาแปลว่าสุก', '4. ใส่ผักกาดขาวและเต้าหู้ไข่ ปรุงรสด้วยซีอิ๊วขาว ต้มต่ออีก 1 นาทีแล้วปิดไฟ']
+        },
+        {
+          name: 'ข้าวต้มอกไก่ฉีกทรงเครื่อง',
+          cal: '345 kcal',
+          pro: 'โปรตีน 36g',
+          tag: 'ย่อยง่ายมื้อดึก',
+          img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSblVyU8GcjcLeidlSJVw_9BdULlu2bzgLZJS8DkuK94yt0siuVMh52Vi0&s=10',
+          ing: ['อกไก่ต้มสุกฉีกเป็นเส้น 150 กรัม (โปรตีน ~34g)', 'ข้าวสวย 1 ทัพพีพูน (~160 kcal, โปรตีน ~2g)', 'ขิงซอย ต้นหอม ผักชี คื่นช่าย', 'ซีอิ๊วขาว 1 ช้อนโต๊ะ + พริกไทยป่น', 'น้ำเปล่า 2 ถ้วย (งดกระเทียมเจียว)'],
+          steps: ['1. ตั้งหม้อต้มน้ำเปล่าให้เดือด ใส่ข้าวสวยลงไปต้มจนเม็ดข้าวเริ่มบานนุ่ม', '2. ใส่อกไก่ฉีกและขิงซอยลงไปต้มรวมกันเพื่อเพิ่มกลิ่นหอม', '3. ปรุงรสด้วยซีอิ๊วขาวคนให้เข้ากัน ตักใส่ชาม', '4. โรยหน้าด้วยต้นหอม คื่นช่าย และพริกไทยป่นเยอะๆ (งดใส่กระเทียมเจียวเพื่อเลี่ยงน้ำมัน)']
+        }
+      ],
+      tx: [] // ล้างรายการรายรับ-รายจ่ายเริ่มต้นออกทั้งหมด
+    };
+
+    let state = JSON.parse(localStorage.getItem('br_assistant_v4')) || defaultData;
+    function saveState() {
+      localStorage.setItem('br_assistant_v4', JSON.stringify(state));
+    }
+
+    let currentTab = 'schedule';
+    let selectedProgIdx = null;
+    let selectedDayIdx = null;
+
+    function switchTab(tab, btn) {
+      currentTab = tab;
+      selectedProgIdx = null;
+      selectedDayIdx = null;
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      render();
+    }
+
+    // ==========================================
+    // สร้างภาพ SVG อนาโตมี 2 จังหวะสไตล์เรฟจริง
+    // ==========================================
+    function getAnatomySVG(pose, isEnd) {
+      const red = isEnd ? '#EA580C' : '#F97316';
+      const op = isEnd ? '0.95' : '0.6';
+
+      if (pose === 'bench_press' || pose === 'hex_press' || pose === 'fly') {
+        const armY = isEnd ? 22 : 38;
+        const spread = pose === 'hex_press' ? 6 : (isEnd ? 12 : (pose === 'fly' ? 28 : 22));
+        return `
+          <svg viewBox="0 0 120 90" width="115" height="85">
+            <polygon points="25,68 75,24 92,34 42,78" fill="#1E293B"/>
+            <path d="M75,34 L98,36 L100,60" stroke="#94A3B8" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <g transform="translate(56,48) rotate(-42)">
+              <rect x="-12" y="-18" width="24" height="36" rx="6" fill="#CBD5E1" stroke="#64748B" stroke-width="1.2"/>
+              <rect x="-10" y="-14" width="9.5" height="11" rx="3" fill="${red}" opacity="${op}" stroke="#9A3412" stroke-width="1"/>
+              <rect x="0.5" y="-14" width="9.5" height="11" rx="3" fill="${red}" opacity="${op}" stroke="#9A3412" stroke-width="1"/>
+              <line x1="0" y1="-1" x2="0" y2="14" stroke="#94A3B8" stroke-width="1"/>
+              <line x1="-6" y1="5" x2="6" y2="5" stroke="#94A3B8" stroke-width="1"/>
+              <circle cx="0" cy="-25" r="7.5" fill="#CBD5E1" stroke="#64748B" stroke-width="1.2"/>
+            </g>
+            <line x1="46" y1="42" x2="${50 - spread}" y2="${armY}" stroke="#94A3B8" stroke-width="5.5" stroke-linecap="round"/>
+            <line x1="60" y1="34" x2="${56 + spread}" y2="${armY - 6}" stroke="#94A3B8" stroke-width="5.5" stroke-linecap="round"/>
+            <rect x="${44 - spread}" y="${armY - 5}" width="12" height="10" rx="2" fill="#0F172A"/>
+            <rect x="${50 + spread}" y="${armY - 11}" width="12" height="10" rx="2" fill="#0F172A"/>
+          </svg>
+        `;
+      }
+
+      const squatY = (pose === 'squat' && isEnd) ? 10 : 0;
+      let highlightSVG = '';
+      if (pose === 'shoulder_press' || pose === 'lateral_raise') {
+        highlightSVG = `<circle cx="46" cy="29" r="6" fill="${red}" opacity="${op}"/><circle cx="74" cy="29" r="6" fill="${red}" opacity="${op}"/>`;
+      } else if (pose === 'row') {
+        highlightSVG = `<polygon points="48,28 72,28 66,50 54,50" fill="${red}" opacity="${op}"/>`;
+      } else if (pose === 'plank') {
+        highlightSVG = `<rect x="53" y="36" width="14" height="18" rx="3" fill="${red}" opacity="${op}"/>`;
+      } else if (pose === 'bicep_curl' || pose === 'tricep_ext') {
+        highlightSVG = `<circle cx="44" cy="36" r="5" fill="${red}" opacity="${op}"/><circle cx="76" cy="36" r="5" fill="${red}" opacity="${op}"/>`;
+      } else if (pose === 'squat') {
+        highlightSVG = `<line x1="53" y1="${58+squatY}" x2="50" y2="82" stroke="${red}" stroke-width="7.5" stroke-linecap="round"/><line x1="67" y1="${58+squatY}" x2="70" y2="82" stroke="${red}" stroke-width="7.5" stroke-linecap="round"/>`;
+      }
+
+      let armsSVG = '';
+      if (pose === 'bicep_curl') {
+        const hy = isEnd ? 26 : 56;
+        armsSVG = `
+          <polyline points="47,29 44,42 44,${hy}" stroke="#94A3B8" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+          <polyline points="73,29 76,42 76,${hy}" stroke="#94A3B8" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+          <rect x="38" y="${hy-4}" width="12" height="8" rx="2" fill="#0F172A"/>
+          <rect x="70" y="${hy-4}" width="12" height="8" rx="2" fill="#0F172A"/>
+        `;
+      } else if (pose === 'shoulder_press') {
+        const hy = isEnd ? 8 : 22;
+        const hx = isEnd ? 12 : 20;
+        armsSVG = `
+          <line x1="47" y1="29" x2="${60-hx}" y2="${hy}" stroke="#94A3B8" stroke-width="5.5" stroke-linecap="round"/>
+          <line x1="73" y1="29" x2="${60+hx}" y2="${hy}" stroke="#94A3B8" stroke-width="5.5" stroke-linecap="round"/>
+          <rect x="${54-hx}" y="${hy-4}" width="12" height="8" rx="2" fill="#0F172A"/>
+          <rect x="${54+hx}" y="${hy-4}" width="12" height="8" rx="2" fill="#0F172A"/>
+        `;
+      } else if (pose === 'lateral_raise') {
+        const hy = isEnd ? 29 : 55;
+        const hx = isEnd ? 32 : 16;
+        armsSVG = `
+          <line x1="47" y1="29" x2="${60-hx}" y2="${hy}" stroke="#94A3B8" stroke-width="5.5" stroke-linecap="round"/>
+          <line x1="73" y1="29" x2="${60+hx}" y2="${hy}" stroke="#94A3B8" stroke-width="5.5" stroke-linecap="round"/>
+          <rect x="${56-hx}" y="${hy-5}" width="8" height="10" rx="2" fill="#0F172A"/>
+          <rect x="${56+hx}" y="${hy-5}" width="8" height="10" rx="2" fill="#0F172A"/>
+        `;
+      } else if (pose === 'tricep_ext') {
+        const hy = isEnd ? 6 : 20;
+        armsSVG = `
+          <polyline points="48,28 54,14 56,${hy}" stroke="#94A3B8" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <polyline points="72,28 66,14 64,${hy}" stroke="#94A3B8" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <rect x="52" y="${hy-4}" width="16" height="8" rx="2" fill="#0F172A"/>
+        `;
+      } else if (pose === 'row') {
+        const hy = isEnd ? 38 : 56;
+        armsSVG = `
+          <line x1="47" y1="29" x2="43" y2="${hy}" stroke="#94A3B8" stroke-width="5.5" stroke-linecap="round"/>
+          <line x1="73" y1="29" x2="77" y2="${hy}" stroke="#94A3B8" stroke-width="5.5" stroke-linecap="round"/>
+          <rect x="37" y="${hy-4}" width="12" height="8" rx="2" fill="#0F172A"/>
+          <rect x="71" y="${hy-4}" width="12" height="8" rx="2" fill="#0F172A"/>
+        `;
+      } else {
+        armsSVG = `
+          <line x1="47" y1="${29+squatY}" x2="60" y2="${35+squatY}" stroke="#94A3B8" stroke-width="5" stroke-linecap="round"/>
+          <line x1="73" y1="${29+squatY}" x2="60" y2="${35+squatY}" stroke="#94A3B8" stroke-width="5" stroke-linecap="round"/>
+          <rect x="53" y="${31+squatY}" width="14" height="8" rx="2" fill="#0F172A"/>
+        `;
+      }
+
+      return `
+        <svg viewBox="0 0 120 90" width="115" height="85">
+          <circle cx="60" cy="${15+squatY}" r="8" fill="#CBD5E1" stroke="#64748B" stroke-width="1.2"/>
+          <rect x="47" y="${25+squatY}" width="26" height="33" rx="6" fill="#CBD5E1" stroke="#64748B" stroke-width="1.2"/>
+          <line x1="53" y1="${58+squatY}" x2="50" y2="84" stroke="#94A3B8" stroke-width="6.5" stroke-linecap="round"/>
+          <line x1="67" y1="${58+squatY}" x2="70" y2="84" stroke="#94A3B8" stroke-width="6.5" stroke-linecap="round"/>
+          ${highlightSVG}
+          ${armsSVG}
+        </svg>
+      `;
+    }
+
+    // ==========================================
+    // Render หน้าจอแต่ละแท็บ
+    // ==========================================
+    function render() {
+      const app = document.getElementById('app');
+
+      // 1. หน้าตารางชีวิต
+      if (currentTab === 'schedule') {
+        app.innerHTML = `
+          <div class="app-header"><h1>ไกด์ไลน์ชีวิตวันนี้</h1></div>
+          <div class="banner">
+            <h2>แตะที่การ์ดเพื่อแก้เวลาหรือเปลี่ยนคำได้</h2>
+            <p>ปรับให้เข้ากับตารางเรียนและงานแต่ละวันได้เลย (เซฟอัตโนมัติ)</p>
+          </div>
+          <div class="container">
+            ${state.schedule.map((item, i) => `
+              <div class="card" onclick="openScheduleModal(${i})">
+                <div class="card-row">
+                  <div class="time-badge">${item.time}</div>
+                  <div style="flex:1">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                      <span class="card-title">${item.title}</span>
+                      <span class="tag-pill">${item.tag}</span>
+                    </div>
+                    <div class="card-sub">${item.sub}</div>
+                  </div>
+                  <button class="icon-btn del" onclick="event.stopPropagation(); deleteSchedule(${i})">🗑️</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <button class="fab" onclick="openScheduleModal(null)">+ เพิ่มเวลา</button>
+        `;
+      }
+
+      // 2. หน้าออกกำลังกาย (3 ชั้น)
+      else if (currentTab === 'workout') {
+        if (selectedProgIdx === null) {
+          app.innerHTML = `
+            <div class="app-header"><h1>โปรแกรมออกกำลังกาย</h1></div>
+            <div class="container">
+              ${state.programs.map((p, i) => `
+                <div class="card" onclick="selectedProgIdx=${i}; render();">
+                  <div class="card-row">
+                    <div style="background:#E0F2FE; padding:12px; border-radius:14px; font-size:24px;">🏋️</div>
+                    <div style="flex:1">
+                      <div class="card-title">${p.title}</div>
+                      <div class="card-sub">${p.desc}</div>
+                      <div style="margin-top:6px;"><span class="tag-pill">ทั้งหมด ${p.days.length} วันฝึก</span></div>
+                    </div>
+                    <div class="icon-actions" onclick="event.stopPropagation()">
+                      <button class="icon-btn edit" onclick="openProgModal(${i})">✏️</button>
+                      <button class="icon-btn del" onclick="deleteProg(${i})">🗑️</button>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <button class="fab" onclick="openProgModal(null)">+ เพิ่มโปรแกรม</button>
+          `;
+        } else if (selectedDayIdx === null) {
+          const prog = state.programs[selectedProgIdx];
+          app.innerHTML = `
+            <div class="app-header">
+              <button class="back-btn" onclick="selectedProgIdx=null; render();">← กลับ</button>
+              <h1 style="font-size:17px;">${prog.title}</h1>
+            </div>
+            <div class="container">
+              ${prog.days.length === 0 ? '<p style="text-align:center; color:#94A3B8; margin-top:40px;">ยังไม่มีวันฝึก กด + เพิ่มวันฝึก ด้านล่างได้เลย</p>' : ''}
+              ${prog.days.map((d, i) => `
+                <div class="card" onclick="selectedDayIdx=${i}; render();">
+                  <div class="card-row">
+                    <div style="background:#0284C7; color:white; font-weight:700; padding:10px 14px; border-radius:12px; white-space:nowrap;">${d.dayTitle}</div>
+                    <div style="flex:1">
+                      <div class="card-title">${d.focusArea}</div>
+                      <div class="card-sub">${d.exercises.length} ท่าออกกำลังกาย</div>
+                    </div>
+                    <div class="icon-actions" onclick="event.stopPropagation()">
+                      <button class="icon-btn edit" onclick="openDayModal(${i})">✏️</button>
+                      <button class="icon-btn del" onclick="deleteDay(${i})">🗑️</button>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <button class="fab" onclick="openDayModal(null)">+ เพิ่มวันฝึก</button>
+          `;
+        } else {
+          const prog = state.programs[selectedProgIdx];
+          const day = prog.days[selectedDayIdx];
+          app.innerHTML = `
+            <div class="app-header">
+              <button class="back-btn" onclick="selectedDayIdx=null; render();">← กลับ</button>
+              <h1 style="font-size:17px;">${day.dayTitle}: ${day.focusArea}</h1>
+            </div>
+            <div class="container">
+              ${day.exercises.length === 0 ? '<p style="text-align:center; color:#94A3B8; margin-top:40px;">ยังไม่มีท่าในวันนี้ กด + เพิ่มท่า ด้านล่างได้เลย</p>' : ''}
+              ${day.exercises.map((ex, i) => `
+                <div class="card" style="${ex.done ? 'background:#F0F9FF; border-color:#38BDF8;' : ''}">
+                  <div class="card-row">
+                    <input type="checkbox" ${ex.done ? 'checked' : ''} onchange="toggleEx(${i})" style="width:20px; height:20px; accent-color:#0284C7;">
+                    <div style="flex:1">
+                      <div class="card-title ${ex.done ? 'strike' : ''}">${ex.name}</div>
+                      <div class="card-sub">${ex.sets} • ${ex.weight}</div>
+                    </div>
+                    <div class="icon-actions">
+                      <button class="icon-btn edit" onclick="openExModal(${i})">✏️</button>
+                      <button class="icon-btn del" onclick="deleteEx(${i})">🗑️</button>
+                    </div>
+                  </div>
+
+                  <div class="anatomy-box">
+                    <div class="anatomy-phase">
+                      ${getAnatomySVG(ex.pose, false)}
+                      <span style="color:#475569;">จังหวะเตรียม</span>
+                    </div>
+                    <div class="divider-v"></div>
+                    <div class="anatomy-phase">
+                      ${getAnatomySVG(ex.pose, true)}
+                      <span style="color:#E11D48;">จังหวะออกแรง</span>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; gap:8px;">
+                    <div style="font-size:12px; font-weight:600; color:#0F172A;">🔥 ได้ส่วน: ${ex.target}</div>
+                    <button class="btn-video" onclick="openVideoModal(${i})">▶ ดูคลิปเฉพาะท่า</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <button class="fab" onclick="openExModal(null)">+ เพิ่มท่า</button>
+          `;
+        }
+      }
+
+      // 3. หน้าเมนูคลีน
+      else if (currentTab === 'recipe') {
+        app.innerHTML = `
+          <div class="app-header"><h1>คลังเมนูคลีนทำง่าย</h1></div>
+          <div class="container">
+            ${state.recipes.map((r, i) => `
+              <div class="recipe-card" onclick="openRecipeDetail(${i})">
+                <img class="recipe-img" src="${r.img}" onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnAV-jBzkmz9Oj7biqJcEXPFJmN3JJe8olOD_eN1ciiKbmZxaVS2-byyZv&s=10'">
+                <div class="recipe-info">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div class="card-title" style="font-size:15px;">${r.name}</div>
+                    <div class="icon-actions" onclick="event.stopPropagation()">
+                      <button class="icon-btn edit" onclick="openRecipeModal(${i})">✏️</button>
+                      <button class="icon-btn del" onclick="deleteRecipe(${i})">🗑️</button>
+                    </div>
+                  </div>
+                  <div style="color:#0284C7; font-size:12px; font-weight:700; margin:4px 0;">${r.pro} • ${r.cal}</div>
+                  <span class="tag-pill" style="background:#F1F5F9; color:#475569;">${r.tag}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <button class="fab" onclick="openRecipeModal(null)">+ เพิ่มเมนู</button>
+        `;
+      }
+
+      // 4. หน้าการเงิน (เริ่มต้นว่างเปล่า ไม่มีรายการค้าง)
+      else if (currentTab === 'finance') {
+        const inc = state.tx.filter(t => t.isIncome).reduce((s, t) => s + t.amount, 0);
+        const exp = state.tx.filter(t => !t.isIncome).reduce((s, t) => s + t.amount, 0);
+        const bal = inc - exp;
+
+        app.innerHTML = `
+          <div class="app-header"><h1>บัญชีรายรับ - รายจ่าย</h1></div>
+          <div class="finance-box">
+            <div style="font-size:13px; opacity:0.85;">ยอดเงินคงเหลือสุทธิ</div>
+            <div class="finance-balance">฿${bal.toLocaleString()}</div>
+            <div class="finance-stats">
+              <span style="color:#86EFAC;">↓ รับ: +฿${inc.toLocaleString()}</span>
+              <span style="color:#FCA5A5;">↑ จ่าย: -฿${exp.toLocaleString()}</span>
+            </div>
+          </div>
+          <div class="container">
+            ${state.tx.length === 0 ? '<p style="text-align:center; color:#94A3B8; margin-top:40px; font-size:14px;">ยังไม่มีรายการบันทึก กดปุ่ม <strong>+ จดรายการ</strong> ด้านล่างเพื่อเริ่มจดได้เลย</p>' : ''}
+            ${state.tx.map((t, i) => `
+              <div class="card">
+                <div class="card-row">
+                  <div style="width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; background:${t.isIncome ? '#DCFCE7' : '#FFE4E6'}; color:${t.isIncome ? '#16A34A' : '#E11D48'};">
+                    ${t.isIncome ? '+' : '-'}
+                  </div>
+                  <div style="flex:1">
+                    <div class="card-title" style="font-size:14px;">${t.title}</div>
+                    <div class="card-sub">${t.date}</div>
+                  </div>
+                  <div style="font-weight:700; font-size:15px; color:${t.isIncome ? '#16A34A' : '#E11D48'};">
+                    ${t.isIncome ? '+' : '-'}฿${t.amount.toLocaleString()}
+                  </div>
+                  <button class="icon-btn del" onclick="deleteTx(${i})">🗑️</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <button class="fab" onclick="openTxModal()">+ จดรายการ</button>
+        `;
+      }
+    }
+
+    // ==========================================
+    // ฟังก์ชันจัดการ Modal & CRUD
+    // ==========================================
+    function showModal(html) {
+      document.getElementById('modalContent').innerHTML = html;
+      document.getElementById('modalBackdrop').classList.add('open');
+    }
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.remove('open');
+      const vid = document.getElementById('workoutVidPlayer');
+      if (vid) vid.pause();
+    }
+    document.getElementById('modalBackdrop').addEventListener('click', (e) => {
+      if (e.target.id === 'modalBackdrop') closeModal();
+    });
+
+    // --- Schedule CRUD ---
+    function openScheduleModal(idx) {
+      const item = idx !== null ? state.schedule[idx] : { time: '', title: '', sub: '', tag: 'ทั่วไป' };
+      showModal(`
+        <h3>${idx === null ? 'เพิ่มช่วงเวลาใหม่' : 'แก้ไขตารางเวลา'}</h3>
+        <div class="form-group"><label>เวลา (เช่น 15:30)</label><input id="scTime" value="${item.time}"></div>
+        <div class="form-group"><label>หัวข้อกิจกรรม</label><input id="scTitle" value="${item.title}"></div>
+        <div class="form-group"><label>รายละเอียด</label><input id="scSub" value="${item.sub}"></div>
+        <div class="form-group"><label>ป้ายหมวดหมู่</label><input id="scTag" value="${item.tag}"></div>
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+          <button class="btn-save" onclick="saveSchedule(${idx})">บันทึก</button>
+        </div>
+      `);
+    }
+    function saveSchedule(idx) {
+      const time = document.getElementById('scTime').value.trim();
+      const title = document.getElementById('scTitle').value.trim();
+      const sub = document.getElementById('scSub').value.trim();
+      const tag = document.getElementById('scTag').value.trim() || 'ทั่วไป';
+      if (!time || !title) return;
+      if (idx === null) state.schedule.push({ time, title, sub, tag });
+      else state.schedule[idx] = { time, title, sub, tag };
+      saveState(); closeModal(); render();
+    }
+    function deleteSchedule(idx) {
+      state.schedule.splice(idx, 1); saveState(); render();
+    }
+
+    // --- Workout CRUD ---
+    function openProgModal(idx) {
+      const p = idx !== null ? state.programs[idx] : { title: '', desc: '' };
+      showModal(`
+        <h3>${idx === null ? 'สร้างโปรแกรมใหม่' : 'แก้ไขโปรแกรม'}</h3>
+        <div class="form-group"><label>ชื่อโปรแกรม</label><input id="prTitle" value="${p.title}"></div>
+        <div class="form-group"><label>รายละเอียดสั้นๆ</label><input id="prDesc" value="${p.desc}"></div>
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+          <button class="btn-save" onclick="saveProg(${idx})">บันทึก</button>
+        </div>
+      `);
+    }
+    function saveProg(idx) {
+      const title = document.getElementById('prTitle').value.trim();
+      const desc = document.getElementById('prDesc').value.trim() || 'โปรแกรมฝึกส่วนตัว';
+      if (!title) return;
+      if (idx === null) state.programs.push({ title, desc, days: [] });
+      else { state.programs[idx].title = title; state.programs[idx].desc = desc; }
+      saveState(); closeModal(); render();
+    }
+    function deleteProg(idx) {
+      state.programs.splice(idx, 1); saveState(); render();
+    }
+
+    function openDayModal(idx) {
+      const prog = state.programs[selectedProgIdx];
+      const d = idx !== null ? prog.days[idx] : { dayTitle: 'Day ' + (prog.days.length + 1), focusArea: '' };
+      showModal(`
+        <h3>${idx === null ? 'เพิ่มวันฝึกใหม่' : 'แก้ไขวันฝึก'}</h3>
+        <div class="form-group"><label>ชื่อวัน (เช่น วันเสาร์)</label><input id="dyTitle" value="${d.dayTitle}"></div>
+        <div class="form-group"><label>ส่วนที่เล่น (เช่น คาร์ดิโอ & ท้อง)</label><input id="dyFocus" value="${d.focusArea}"></div>
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+          <button class="btn-save" onclick="saveDay(${idx})">บันทึก</button>
+        </div>
+      `);
+    }
+    function saveDay(idx) {
+      const dayTitle = document.getElementById('dyTitle').value.trim();
+      const focusArea = document.getElementById('dyFocus').value.trim() || 'ฝึกทั่วไป';
+      if (!dayTitle) return;
+      const prog = state.programs[selectedProgIdx];
+      if (idx === null) prog.days.push({ dayTitle, focusArea, exercises: [] });
+      else { prog.days[idx].dayTitle = dayTitle; prog.days[idx].focusArea = focusArea; }
+      saveState(); closeModal(); render();
+    }
+    function deleteDay(idx) {
+      state.programs[selectedProgIdx].days.splice(idx, 1); saveState(); render();
+    }
+
+    function openExModal(idx) {
+      const day = state.programs[selectedProgIdx].days[selectedDayIdx];
+      const ex = idx !== null ? day.exercises[idx] : { name: '', target: '', pose: 'bench_press', videoSrc: 'workout_guide.mp4', startTime: 0, endTime: 3.9, crop: 'full', sets: '8-12 ครั้ง 4 เซ็ต', weight: 'ข้างละ 6 kg', tip: '' };
+      showModal(`
+        <h3>${idx === null ? 'เพิ่มท่าออกกำลังกาย' : 'แก้ไขท่าออกกำลังกาย'}</h3>
+        <div class="form-group"><label>ชื่อท่า</label><input id="exName" value="${ex.name}"></div>
+        <div class="form-group"><label>เล่นแล้วได้ส่วนไหน</label><input id="exTarget" value="${ex.target}"></div>
+        <div class="form-group">
+          <label>เลือกรูปแบบท่าอนาโตมี & จุดไฮไลต์สีแดง</label>
+          <select id="exPose">
+            <option value="bench_press" ${ex.pose==='bench_press'?'selected':''}>นอนดันอก (ไฮไลต์อกกลาง)</option>
+            <option value="hex_press" ${ex.pose==='hex_press'?'selected':''}>นอนบีบอกใน (ไฮไลต์ร่องอก)</option>
+            <option value="fly" ${ex.pose==='fly'?'selected':''}>นอนกางแขน (ไฮไลต์อกนอก)</option>
+            <option value="tricep_ext" ${ex.pose==='tricep_ext'?'selected':''}>ยกเหนือหัว (ไฮไลต์หลังแขน)</option>
+            <option value="row" ${ex.pose==='row'?'selected':''}>ดึงดัมเบลเข้าเอว (ไฮไลต์ปีกหลัง)</option>
+            <option value="bicep_curl" ${ex.pose==='bicep_curl'?'selected':''}>ยืนพับแขน (ไฮไลต์หน้าแขน)</option>
+            <option value="shoulder_press" ${ex.pose==='shoulder_press'?'selected':''}>ยืนดันไหล่ (ไฮไลต์หัวไหล่)</option>
+            <option value="lateral_raise" ${ex.pose==='lateral_raise'?'selected':''}>ยืนกางแขน (ไฮไลต์ไหล่ข้าง)</option>
+            <option value="plank" ${ex.pose==='plank'?'selected':''}>เกร็งลำตัว (ไฮไลต์หน้าท้อง)</option>
+            <option value="squat" ${ex.pose==='squat'?'selected':''}>ย่อตัวสควอท (ไฮไลต์ต้นขา & ก้น)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>จำนวนเซ็ต</label><input id="exSets" value="${ex.sets}"></div>
+        <div class="form-group"><label>น้ำหนัก</label><input id="exWeight" value="${ex.weight}"></div>
+        <div class="form-group"><label>ชื่อไฟล์คลิป MP4</label><input id="exVidSrc" value="${ex.videoSrc || 'workout_guide.mp4'}"></div>
+        <div class="form-group">
+          <label>ซูมตัดเฉพาะช่องในคลิป (Crop)</label>
+          <select id="exCrop">
+            <option value="tl" ${ex.crop==='tl'?'selected':''}>ช่องซ้ายบน</option>
+            <option value="tr" ${ex.crop==='tr'?'selected':''}>ช่องขวาบน</option>
+            <option value="bl" ${ex.crop==='bl'?'selected':''}>ช่องซ้ายล่าง</option>
+            <option value="br" ${ex.crop==='br'?'selected':''}>ช่องขวาล่าง</option>
+            <option value="full" ${ex.crop==='full'?'selected':''}>เต็มจอ (ไม่ซูมตัด)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>วินาทีเริ่ม - จบ (คั่นด้วยขีด เช่น 0-3.9)</label><input id="exTimeRange" value="${(ex.startTime ?? 0)}-${(ex.endTime ?? 3.9)}"></div>
+        <div class="form-group"><label>ทริคการจัดฟอร์ม</label><textarea id="exTip" rows="2">${ex.tip}</textarea></div>
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+          <button class="btn-save" onclick="saveEx(${idx})">บันทึก</button>
+        </div>
+      `);
+    }
+    function saveEx(idx) {
+      const name = document.getElementById('exName').value.trim();
+      if (!name) return;
+      const rangeParts = document.getElementById('exTimeRange').value.split('-');
+      const sTime = parseFloat(rangeParts[0]) || 0;
+      const eTime = parseFloat(rangeParts[1]) || (sTime + 3.8);
+
+      const obj = {
+        name,
+        target: document.getElementById('exTarget').value.trim() || 'กล้ามเนื้อเป้าหมาย',
+        pose: document.getElementById('exPose').value,
+        sets: document.getElementById('exSets').value.trim() || '8-12 ครั้ง 4 เซ็ต',
+        weight: document.getElementById('exWeight').value.trim() || '6 kg',
+        videoSrc: document.getElementById('exVidSrc').value.trim() || 'workout_guide.mp4',
+        crop: document.getElementById('exCrop').value,
+        startTime: sTime,
+        endTime: eTime,
+        tip: document.getElementById('exTip').value.trim() || 'โฟกัสกล้ามเนื้อเป้าหมาย คุมจังหวะขึ้นลงช้าๆ',
+        done: idx !== null ? state.programs[selectedProgIdx].days[selectedDayIdx].exercises[idx].done : false
+      };
+      const day = state.programs[selectedProgIdx].days[selectedDayIdx];
+      if (idx === null) day.exercises.push(obj);
+      else day.exercises[idx] = obj;
+      saveState(); closeModal(); render();
+    }
+    function deleteEx(idx) {
+      state.programs[selectedProgIdx].days[selectedDayIdx].exercises.splice(idx, 1); saveState(); render();
+    }
+    function toggleEx(idx) {
+      const ex = state.programs[selectedProgIdx].days[selectedDayIdx].exercises[idx];
+      ex.done = !ex.done; saveState(); render();
+    }
+
+    function openVideoModal(idx) {
+      const ex = state.programs[selectedProgIdx].days[selectedDayIdx].exercises[idx];
+      const src = ex.videoSrc || 'workout_guide.mp4';
+      const sTime = ex.startTime ?? 0;
+      const eTime = ex.endTime ?? 3.9;
+      const cropClass = 'crop-' + (ex.crop || 'full');
+
+      showModal(`
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="margin-bottom:0;">${ex.name}</h3>
+          <span class="tag-pill">วนลูปเฉพาะท่า</span>
+        </div>
+        <div class="video-crop-viewport">
+          <video id="workoutVidPlayer" class="${cropClass}" playsinline autoplay muted>
+            <source src="${src}" type="video/mp4">
+            เบราว์เซอร์ไม่รองรับการเล่นวิดีโอ
+          </video>
+        </div>
+        <div style="text-align:center; margin-bottom:10px;">
+          <label style="display:inline-flex; align-items:center; gap:6px; background:#F0F9FF; color:#0284C7; padding:6px 12px; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer; border:1px dashed #38BDF8;">
+            📂 เลือกไฟล์วิดีโอจากเครื่อง (ถ้ายังไม่ได้วางในโฟลเดอร์)
+            <input type="file" accept="video/*" style="display:none;" onchange="loadLocalVideoFile(this, ${sTime})">
+          </label>
+        </div>
+        <div style="font-size:13px; font-weight:700; color:#E11D48; margin-bottom:8px;">🔥 ได้ส่วน: ${ex.target}</div>
+        <div style="background:#F8FAFC; padding:12px; border-radius:12px; font-size:13px; line-height:1.5; color:#334155;">
+          <strong>ทริคการจัดฟอร์ม:</strong> ${ex.tip}
+        </div>
+        <div class="modal-actions">
+          <button class="btn-save" onclick="closeModal()">ปิดหน้าต่าง</button>
+        </div>
+      `);
+
+      const vid = document.getElementById('workoutVidPlayer');
+      if (vid) {
+        vid.addEventListener('loadedmetadata', () => {
+          vid.currentTime = sTime;
+          vid.play().catch(() => {});
+        });
+        vid.addEventListener('timeupdate', () => {
+          if (vid.currentTime >= eTime || vid.currentTime < sTime) {
+            vid.currentTime = sTime;
+          }
+        });
+      }
+    }
+
+    function loadLocalVideoFile(input, startTime) {
+      if (input.files && input.files[0]) {
+        const fileURL = URL.createObjectURL(input.files[0]);
+        const vid = document.getElementById('workoutVidPlayer');
+        if (vid) {
+          vid.src = fileURL;
+          vid.currentTime = startTime;
+          vid.play();
+        }
+      }
+    }
+
+    // --- Recipe CRUD ---
+    function openRecipeDetail(idx) {
+      const r = state.recipes[idx];
+      showModal(`
+        <img src="${r.img}" style="width:100%; height:170px; object-fit:cover; border-radius:14px; margin-bottom:12px;" onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnAV-jBzkmz9Oj7biqJcEXPFJmN3JJe8olOD_eN1ciiKbmZxaVS2-byyZv&s=10'">
+        <h3>${r.name}</h3>
+        <div style="display:flex; gap:8px; margin-bottom:14px;">
+          <span class="tag-pill">${r.pro}</span>
+          <span class="tag-pill" style="background:#FEF3C7; color:#D97706;">${r.cal}</span>
+          <span class="tag-pill" style="background:#F1F5F9; color:#475569;">${r.tag}</span>
+        </div>
+        <div style="font-weight:700; font-size:14px; margin-bottom:6px;">วัตถุดิบที่ต้องเตรียม:</div>
+        <ul style="padding-left:18px; font-size:13px; color:#334155; margin-bottom:14px; line-height:1.6;">
+          ${r.ing.map(x => `<li>${x}</li>`).join('')}
+        </ul>
+        <div style="font-weight:700; font-size:14px; margin-bottom:6px;">ขั้นตอนวิธีทำ:</div>
+        <div style="font-size:13px; color:#1E293B; line-height:1.6;">
+          ${r.steps.map(x => `<p style="margin-bottom:6px;">${x}</p>`).join('')}
+        </div>
+        <div class="modal-actions">
+          <button class="btn-save" onclick="closeModal()">ปิด</button>
+        </div>
+      `);
+    }
+    function openRecipeModal(idx) {
+      const r = idx !== null ? state.recipes[idx] : { name: '', cal: '', pro: '', tag: '', img: '', ing: [], steps: [] };
+      showModal(`
+        <h3>${idx === null ? 'เพิ่มเมนูคลีนใหม่' : 'แก้ไขเมนูอาหาร'}</h3>
+        <div class="form-group"><label>ชื่อเมนู</label><input id="rcName" value="${r.name}"></div>
+        <div class="form-group"><label>แคลอรี (เช่น 250 kcal)</label><input id="rcCal" value="${r.cal}"></div>
+        <div class="form-group"><label>โปรตีนจริง (เช่น โปรตีน 45g)</label><input id="rcPro" value="${r.pro}"></div>
+        <div class="form-group"><label>จุดเด่น (เช่น ไม่ใช้น้ำมัน)</label><input id="rcTag" value="${r.tag}"></div>
+        <div class="form-group"><label>ลิงก์รูปภาพอาหาร</label><input id="rcImg" value="${r.img}"></div>
+        <div class="form-group"><label>วัตถุดิบ (คั่นแต่ละอย่างด้วยเครื่องหมาย , )</label><textarea id="rcIng" rows="2">${r.ing.join(', ')}</textarea></div>
+        <div class="form-group"><label>วิธีทำ (คั่นแต่ละขั้นตอนด้วยเครื่องหมาย , )</label><textarea id="rcSteps" rows="3">${r.steps.join(', ')}</textarea></div>
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+          <button class="btn-save" onclick="saveRecipe(${idx})">บันทึกเมนู</button>
+        </div>
+      `);
+    }
+    function saveRecipe(idx) {
+      const name = document.getElementById('rcName').value.trim();
+      if (!name) return;
+      const ingRaw = document.getElementById('rcIng').value.trim();
+      const stepRaw = document.getElementById('rcSteps').value.trim();
+      const obj = {
+        name,
+        cal: document.getElementById('rcCal').value.trim() || '250 kcal',
+        pro: document.getElementById('rcPro').value.trim() || 'โปรตีน 30g',
+        tag: document.getElementById('rcTag').value.trim() || 'เมนูทำเอง',
+        img: document.getElementById('rcImg').value.trim() || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnAV-jBzkmz9Oj7biqJcEXPFJmN3JJe8olOD_eN1ciiKbmZxaVS2-byyZv&s=10',
+        ing: ingRaw ? ingRaw.split(',').map(s => s.trim()) : ['เนื้อสัตว์ไม่ติดมัน', 'เครื่องปรุงสูตรคลีน'],
+        steps: stepRaw ? stepRaw.split(',').map(s => s.trim()) : ['1. เตรียมวัตถุดิบให้พร้อม', '2. ปรุงสุกโดยเลี่ยงน้ำมัน']
+      };
+      if (idx === null) state.recipes.unshift(obj);
+      else state.recipes[idx] = obj;
+      saveState(); closeModal(); render();
+    }
+    function deleteRecipe(idx) {
+      state.recipes.splice(idx, 1); saveState(); render();
+    }
+
+    // --- Finance CRUD ---
+    function openTxModal() {
+      showModal(`
+        <h3>บันทึกรายการใหม่</h3>
+        <div class="form-group">
+          <label>ประเภท</label>
+          <select id="txType">
+            <option value="exp">รายจ่าย (-)</option>
+            <option value="inc">รายรับ (+)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>ชื่อรายการ</label><input id="txTitle" placeholder="เช่น ค่าข้าวกะเพรา, รายได้เกม"></div>
+        <div class="form-group"><label>จำนวนเงิน (บาท)</label><input id="txAmt" type="number" placeholder="0"></div>
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+          <button class="btn-save" onclick="saveTx()">บันทึก</button>
+        </div>
+      `);
+    }
+    function saveTx() {
+      const title = document.getElementById('txTitle').value.trim();
+      const amount = parseInt(document.getElementById('txAmt').value, 10);
+      const isIncome = document.getElementById('txType').value === 'inc';
+      if (!title || isNaN(amount) || amount <= 0) return;
+      state.tx.unshift({ title, amount, isIncome, date: 'วันนี้' });
+      saveState(); closeModal(); render();
+    }
+    function deleteTx(idx) {
+      state.tx.splice(idx, 1); saveState(); render();
+    }
+
+    // เริ่มทำงานครั้งแรก
+    render();
+  </script>
+</body>
+</html>
